@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "winamp-controller", "winamp-controller\winamp-controller.vcproj", "{38D5665C-5265-4CC6-BB6A-B5B5DB6A702C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "winamp-controller-test", "winamp-controller-test\winamp-controller-test.vcproj", "{09B6A0F3-6A1A-440B-9B50-AE0E5ECF07A7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "winamp-server", "winamp-server\winamp-server.vcproj", "{84357085-C4F3-418E-8C9F-12F70ED28DB4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "winamp-server-test", "winamp-server-test\winamp-server-test.vcproj", "{EFBC4E84-A440-4A6D-AC3F-C856B8103C93}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client-test", "client-test\client-test.vcproj", "{492B668C-995B-4714-ADD4-49440E1E27BA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gen_WifiControlForWinamp", "gen_WifiControlForWinamp\gen_WifiControlForWinamp.vcproj", "{C8D76B7A-03E8-4CF8-8489-3C513DCEF4A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38D5665C-5265-4CC6-BB6A-B5B5DB6A702C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{38D5665C-5265-4CC6-BB6A-B5B5DB6A702C}.Debug|Win32.Build.0 = Debug|Win32
+		{38D5665C-5265-4CC6-BB6A-B5B5DB6A702C}.Release|Win32.ActiveCfg = Release|Win32
+		{38D5665C-5265-4CC6-BB6A-B5B5DB6A702C}.Release|Win32.Build.0 = Release|Win32
+		{09B6A0F3-6A1A-440B-9B50-AE0E5ECF07A7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{09B6A0F3-6A1A-440B-9B50-AE0E5ECF07A7}.Debug|Win32.Build.0 = Debug|Win32
+		{09B6A0F3-6A1A-440B-9B50-AE0E5ECF07A7}.Release|Win32.ActiveCfg = Release|Win32
+		{09B6A0F3-6A1A-440B-9B50-AE0E5ECF07A7}.Release|Win32.Build.0 = Release|Win32
+		{84357085-C4F3-418E-8C9F-12F70ED28DB4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{84357085-C4F3-418E-8C9F-12F70ED28DB4}.Debug|Win32.Build.0 = Debug|Win32
+		{84357085-C4F3-418E-8C9F-12F70ED28DB4}.Release|Win32.ActiveCfg = Release|Win32
+		{84357085-C4F3-418E-8C9F-12F70ED28DB4}.Release|Win32.Build.0 = Release|Win32
+		{EFBC4E84-A440-4A6D-AC3F-C856B8103C93}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EFBC4E84-A440-4A6D-AC3F-C856B8103C93}.Debug|Win32.Build.0 = Debug|Win32
+		{EFBC4E84-A440-4A6D-AC3F-C856B8103C93}.Release|Win32.ActiveCfg = Release|Win32
+		{EFBC4E84-A440-4A6D-AC3F-C856B8103C93}.Release|Win32.Build.0 = Release|Win32
+		{492B668C-995B-4714-ADD4-49440E1E27BA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{492B668C-995B-4714-ADD4-49440E1E27BA}.Debug|Win32.Build.0 = Debug|Win32
+		{492B668C-995B-4714-ADD4-49440E1E27BA}.Release|Win32.ActiveCfg = Release|Win32
+		{492B668C-995B-4714-ADD4-49440E1E27BA}.Release|Win32.Build.0 = Release|Win32
+		{C8D76B7A-03E8-4CF8-8489-3C513DCEF4A2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C8D76B7A-03E8-4CF8-8489-3C513DCEF4A2}.Debug|Win32.Build.0 = Debug|Win32
+		{C8D76B7A-03E8-4CF8-8489-3C513DCEF4A2}.Release|Win32.ActiveCfg = Release|Win32
+		{C8D76B7A-03E8-4CF8-8489-3C513DCEF4A2}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
