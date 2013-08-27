@@ -84,25 +84,14 @@ class WinampController {
 		void setShuffleOption(int mode);	//47
 		void setRepeatOption(int mode);		//48
 		std::string getPlayingFilename();	//49
-		std::string getID3Title();	//50
-		std::string getID3Title(int track);
-		std::string getID3Artist();	//51
-		std::string getID3Artist(int track);
-		std::string getID3Album();	//52
-		std::string getID3Album(int track);
-		int getID3Year();	//53
-		int getID3Year(int track);
-		std::string getID3Genre();	//54
-		std::string getID3Genre(int track);
 		std::string getPlaylistEntry(int track);	//55
 		void addToPlaylist(std::string file);		//56
 		void play(std::string media);		//57
-		bool trackTag();					//58
-		bool trackTag(int track);
 		void openWinamp();	//59
 		std::string getPlayingTitle();	//60
 		std::string getPlayingTitle(int track);
+		// metadata=[title,artist,albumartist,album,genre,year,disc,publisher,comment,track,composer,conductor]
+		int getExtendedFileInfo(std::string file, std::string metadata, char* dest, int len); //61
 		
 };
-
 #endif

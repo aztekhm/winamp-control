@@ -3,8 +3,7 @@
 #include "message_codes.h"
 #include "controller_threads.h"
 #include "util.h"
-//#include <fileref.h>
-//#include <tag.h>
+#include "wa_ipc.h"
 #include <stdio.h>
 
 WinampController::WinampController() {
@@ -303,65 +302,6 @@ std::string WinampController::getPlayingFilename() {
 	return getPlaylistEntry(getCurrentTrackInPlaylist());
 }
 
-//std::string WinampController::getID3Title() {
-//	return getID3Title(getCurrentTrackInPlaylist());
-//}
-//
-//std::string WinampController::getID3Title(int track) {
-//	std::string title;
-//	TagLib::FileRef f(getPlaylistEntry(track).c_str());
-//	if (!f.isNull() && f.tag())
-//		title.append(utf8_encode(f.tag()->title().toWString()));
-//	return title;
-//}
-//
-//std::string WinampController::getID3Artist() {
-//	return getID3Artist(getCurrentTrackInPlaylist());
-//}
-//
-//std::string WinampController::getID3Artist(int track) {
-//	std::string artist;
-//	TagLib::FileRef f(getPlaylistEntry(track).c_str());
-//	if (!f.isNull() && f.tag())
-//		artist.append(utf8_encode(f.tag()->artist().toWString()));
-//	return artist;
-//}
-//
-//std::string WinampController::getID3Album() {
-//	return getID3Album(getCurrentTrackInPlaylist());
-//}
-//
-//std::string WinampController::getID3Album(int track) {
-//	std::string album;
-//	TagLib::FileRef f(getPlaylistEntry(track).c_str());
-//	if (!f.isNull() && f.tag())
-//		album.append(utf8_encode(f.tag()->album().toWString()));
-//	return album;
-//}
-//
-//int WinampController::getID3Year() {
-//	return getID3Year(getCurrentTrackInPlaylist());
-//}
-//
-//int WinampController::getID3Year(int track) {
-//	TagLib::FileRef f(getPlaylistEntry(track).c_str());
-//	if (!f.isNull() && f.tag())
-//		return f.tag()->year();
-//	return 0;
-//}
-//
-//std::string WinampController::getID3Genre() {
-//	return getID3Genre(getCurrentTrackInPlaylist());
-//}
-//
-//std::string WinampController::getID3Genre(int track) {
-//	std::string genre;
-//	TagLib::FileRef f(getPlaylistEntry(track).c_str());
-//	if (!f.isNull() && f.tag())
-//		genre.append(f.tag()->genre().toCString());
-//	return genre;
-//}
-
 std::string WinampController::getPlaylistEntry(int track) {
 	std::string fileName;
 	if (track < 0 || track >= getTracksInPlaylist())
@@ -389,15 +329,6 @@ void WinampController::play(std::string media) {
 	playTrack();
 }
 
-//bool WinampController::trackTag() {
-//	return trackTag(getCurrentTrackInPlaylist());
-//}
-//
-//bool WinampController::trackTag(int track) {
-//	TagLib::FileRef f(getPlaylistEntry(track).c_str());
-//	return (!f.isNull() && f.tag() && !f.tag()->isEmpty());
-//}
-
 void WinampController::openWinamp() {
 	if (!_winampPath.empty()) {
 		CreateThread(NULL, 0, openWinampThread, &_winampPath, 0, NULL);
@@ -415,4 +346,16 @@ std::string WinampController::getPlayingTitle(int track) {
 	wchar_t buffer[MAX_PATH];
 	readWinampToLocal(_winampWindow, (wchar_t*)SendMessage(_winampWindow, WM_USER, track, IPC_GETPLAYLISTTITLEW), buffer, MAX_PATH);
 	return utf8_encode(buffer);
+}
+
+int WinampController::getExtendedFileInfo(std::string file, std::string metadata, char* dest, int len) {
+	dest[0] = 0;
+	extendedFileInfoStruct efis = {
+		file.c_str(),
+		metadata.c_str(),
+		dest,
+		len,
+	};
+	return (int)SendMessage(_winampWindow, WM_WA_IPC, (WPARAM) & efis, IPC_GET_EXTENDED_FILE_INFO); //will return 1 if wa2 supports this IPC call
+	
 }

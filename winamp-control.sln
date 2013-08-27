@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "client-test", "client-test\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gen_WifiControlForWinamp", "gen_WifiControlForWinamp\gen_WifiControlForWinamp.vcproj", "{C8D76B7A-03E8-4CF8-8489-3C513DCEF4A2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gen_winampControl", "gen_winampControl\gen_winampControl.vcproj", "{22884725-8DA4-4C59-A2E8-77FA3EDDC8B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -43,6 +45,10 @@ Global
 		{C8D76B7A-03E8-4CF8-8489-3C513DCEF4A2}.Debug|Win32.Build.0 = Debug|Win32
 		{C8D76B7A-03E8-4CF8-8489-3C513DCEF4A2}.Release|Win32.ActiveCfg = Release|Win32
 		{C8D76B7A-03E8-4CF8-8489-3C513DCEF4A2}.Release|Win32.Build.0 = Release|Win32
+		{22884725-8DA4-4C59-A2E8-77FA3EDDC8B0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{22884725-8DA4-4C59-A2E8-77FA3EDDC8B0}.Debug|Win32.Build.0 = Debug|Win32
+		{22884725-8DA4-4C59-A2E8-77FA3EDDC8B0}.Release|Win32.ActiveCfg = Release|Win32
+		{22884725-8DA4-4C59-A2E8-77FA3EDDC8B0}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
