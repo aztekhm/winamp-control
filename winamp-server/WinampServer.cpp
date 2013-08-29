@@ -1,16 +1,17 @@
 #include "WinampServer.h"
-#include "WinampController.h"
 #include <sstream>
 #include <iostream>
 
 WinampServer::WinampServer() {
 	_port = DEFAULT_PORT;
 	_synchronizedMode = true;
+	_winampController = new WinampController();
 }
 
 WinampServer::WinampServer(int port) {
 	_port = port;
 	_synchronizedMode = true;
+	_winampController = new WinampController();
 }
 
 WinampServer::~WinampServer() {
@@ -35,11 +36,13 @@ int WinampServer::getPort() {
 void WinampServer::start() {
 	extern int PORT;
 	extern HWND LISTENER_WINDOW;
+	extern WinampServer* winampServer;
 	
 	PORT = _port;
 	LISTENER_WINDOW = _listenerWindow;
+	winampServer = this;
 	
-	if ((_serverThread = CreateThread(NULL, 0, waitForCommandsThread, this, 0, NULL)) == NULL) {
+	if ((_serverThread = CreateThread(NULL, 0, waitForCommandsThread, NULL, 0, NULL)) == NULL) {
 		sendDataMessage(SERVER_STARTUP_ERROR, "Server startup error");
 	}
 }
@@ -63,6 +66,14 @@ bool WinampServer::getSynchronizedMode() {
 
 HANDLE& WinampServer::getServerThread() {
 	return _serverThread;
+}
+
+void WinampServer::setWinampController(WinampController* winampController) {
+	_winampController = winampController;
+}
+
+WinampController* WinampServer::getWinampController() {
+	return _winampController;
 }
 
 std::string WinampServer::parseRequest(char *prequest) {
@@ -99,8 +110,6 @@ std::string WinampServer::parseRequest(char *prequest) {
 }
 
 std::string WinampServer::executeCommand(int command, std::string param, std::string param2) {
-	WinampController _winampController;
-	_winampController.handleWinampWindow();
 
 	std::string buffer;
 	std::stringstream stringStream(std::ios_base::out | std::ios_base::in);
@@ -117,33 +126,33 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 	///-----------------------------------------------------------------------
 	switch (command) {
 		case 1:
-			buffer.append(_winampController.isWinampRunning() ? "1" : "0");
+			buffer.append(_winampController->isWinampRunning() ? "1" : "0");
 			sendDataMessage(666, "Checking if winamp is running.");
 			break;
 		case 2:
-			_winampController.previousTrack();
+			_winampController->previousTrack();
 			sendDataMessage(666, "Goto previous track.");
 			break;
 		case 3:
-			_winampController.nextTrack();
+			_winampController->nextTrack();
 			sendDataMessage(666, "Goto next track.");
 			break;
 		case 4: {
 			if (param.empty()) {
-				_winampController.playTrack();
+				_winampController->playTrack();
 			} else {
 				int track;
 				std::stringstream paramStream;
 				paramStream << param;
 				paramStream >> track;
-				_winampController.playTrack(track);
+				_winampController->playTrack(track);
 			}
 			sendDataMessage(666, "Play track.");
 			break;
 		}
 		case 5:
 			sendDataMessage(666, "Pause track.");
-			_winampController.pauseTrack();
+			_winampController->pauseTrack();
 			break;
 		case 6: {
 			int mode;
@@ -153,100 +162,100 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 				stringStream << param;
 				stringStream >> mode;
 			}
-			_winampController.stopPlayback(mode);
+			_winampController->stopPlayback(mode);
 			break;
 		}
 		case 7:
-			_winampController.togglePlayPause();
+			_winampController->togglePlayPause();
 			sendDataMessage(666, "Toggle play pause.");
 			break;
 		case 9:
-			_winampController.forwardFiveSeconds();
+			_winampController->forwardFiveSeconds();
 			sendDataMessage(666, "Forward five seconds.");
 			break;
 		case 10:
-			_winampController.rewindFiveSeconds();
+			_winampController->rewindFiveSeconds();
 			sendDataMessage(666, "Rewind five seconds.");
 			break;
 		case 11:
-			_winampController.gotoStartOfPlaylist();
+			_winampController->gotoStartOfPlaylist();
 			sendDataMessage(666, "Goto start of current playlist.");
 			break;
 		case 12:
-			_winampController.gotoEndOfPlaylist();
+			_winampController->gotoEndOfPlaylist();
 			sendDataMessage(666, "Goto end of current playlist.");
 			break;
 		case 13: {
-			stringStream << _winampController.raiseVolumeOnePercent();
+			stringStream << _winampController->raiseVolumeOnePercent();
 			std::string message("Raise volume to "); message.append(stringStream.str());
 			buffer.append(message);
 			sendDataMessage(666, message);
 			break;
 		}
 		case 14: {
-			stringStream << _winampController.lowerVolumeOnePercent();
+			stringStream << _winampController->lowerVolumeOnePercent();
 			std::string message("Lower volume to "); message.append(stringStream.str());
 			buffer.append(message);
 			sendDataMessage(666, message);
 			break;
 		}
 		case 15:
-			_winampController.toggleRepeat();
+			_winampController->toggleRepeat();
 			sendDataMessage(666, "Toggle repeat.");
 			break;
 		case 16:
-			_winampController.toggleShuffle();
+			_winampController->toggleShuffle();
 			sendDataMessage(666, "Toggle shuffle.");
 			break;
 		case 17:
-			_winampController.closeWinamp();
+			_winampController->closeWinamp();
 			sendDataMessage(666, "Close winamp.");
 			break;
 		case 18:
-			_winampController.rewindTenTracksInPlaylist();		
+			_winampController->rewindTenTracksInPlaylist();		
 			sendDataMessage(666, "Rewind ten tracks in current playlist.");
 			break;
 		case 19:
-			_winampController.playAudioCD();
+			_winampController->playAudioCD();
 			sendDataMessage(666, "Play Audio CD.");
 			break;
 		case 20:
-			_winampController.loadDefaultPreset();
+			_winampController->loadDefaultPreset();
 			sendDataMessage(666, "Load default preset.");
 			break;
 		case 21:
-			stringStream << _winampController.getWinampVersion();
+			stringStream << _winampController->getWinampVersion();
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Check winamp version.");
 			break;
 		case 22:
-			_winampController.startPlayback();
+			_winampController->startPlayback();
 			sendDataMessage(666, "Start playback.");
 			break;
 		case 23:
-			_winampController.clearPlaylist();
+			_winampController->clearPlaylist();
 			sendDataMessage(666, "Clear current playlist.");
 			break;
 		case 24:
-			_winampController.playSelectedTrack();
+			_winampController->playSelectedTrack();
 			sendDataMessage(666, "Play selected track.");
 			break;
 		case 25:
-			stringStream << _winampController.getPlaybackStatus();
+			stringStream << _winampController->getPlaybackStatus();
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Check playback status.");
 			break;
 		case 26: {
 			if (param.empty()) {
 				int playbackPosition, trackLength;
-				_winampController.getCurrentTrackInfo(playbackPosition, trackLength);
+				_winampController->getCurrentTrackInfo(playbackPosition, trackLength);
 				stringStream << playbackPosition << "|" << trackLength;
 			} else {
 				int prop;
 				std::stringstream paramStream;
 				paramStream << param;
 				paramStream >> prop;
-				stringStream << _winampController.getCurrentTrackInfo(prop);
+				stringStream << _winampController->getCurrentTrackInfo(prop);
 			}
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Getting current track info");
@@ -256,7 +265,7 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 			int position;
 			stringStream << param;
 			stringStream >> position;
-			_winampController.seekCurrentTrack(position);
+			_winampController->seekCurrentTrack(position);
 			sendDataMessage(666, "Seeking current track position.");
 			break;
 		}
@@ -264,7 +273,7 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 			int position;
 			stringStream << param;
 			stringStream >> position;
-			_winampController.setPlaylistPosition(position);
+			_winampController->setPlaylistPosition(position);
 			sendDataMessage(666, "Setting playlist position.");
 			break;
 		}
@@ -272,41 +281,41 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 			int volume;
 			stringStream << param;
 			stringStream >> volume;
-			_winampController.setVolume(volume);
+			_winampController->setVolume(volume);
 			sendDataMessage(666, "Adjuste volume.");
 			break;
 		}
 		case 31:
-			stringStream << _winampController.getVolume();
+			stringStream << _winampController->getVolume();
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Getting current volume.");
 			break;
 		case 32:
-			_winampController.toggleMute();
+			_winampController->toggleMute();
 			sendDataMessage(666, "Toggle mute.");
 			break;
 		case 33: {
 			int panning;
 			stringStream << param;
 			stringStream >> panning;
-			_winampController.setPanning(panning);
+			_winampController->setPanning(panning);
 			sendDataMessage(666, "Setting panning.");
 			break;
 		}
 		case 34:
-			stringStream << _winampController.getTracksInPlaylist();
+			stringStream << _winampController->getTracksInPlaylist();
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Check tracks in playlist.");
 			break;
 		case 35:
-			stringStream << _winampController.getCurrentTrackInPlaylist();
+			stringStream << _winampController->getCurrentTrackInPlaylist();
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Getting current track in playlist.");
 			break;
 		case 36: {
 			if (param.empty()) {
 				int sampleRate, bitRate, channels;
-				_winampController.getCurrentAudioInfo(sampleRate, bitRate, channels);
+				_winampController->getCurrentAudioInfo(sampleRate, bitRate, channels);
 				stringStream << sampleRate << "|" << bitRate << "|" << channels;
 				buffer.append(stringStream.str());
 			} else {
@@ -314,7 +323,7 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 				std::stringstream paramStream;
 				paramStream << param;
 				paramStream >> prop;
-				stringStream << _winampController.getCurrentAudioInfo(prop);
+				stringStream << _winampController->getCurrentAudioInfo(prop);
 				buffer.append(stringStream.str());
 			}
 			sendDataMessage(666, "Getting current audio info.");
@@ -323,7 +332,7 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 		case 39: {
 			if (param.empty()) {
 				int elements[11];
-				_winampController.getElementEqualizer(elements);
+				_winampController->getElementEqualizer(elements);
 				for (int i=0; i<11; i++) {
 					if (i > 0) stringStream << "|";
 					stringStream << elements[i];
@@ -333,40 +342,40 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 				std::stringstream paramStream;
 				paramStream << param;
 				paramStream >> element;
-				stringStream << _winampController.getElementEqualizer(element);
+				stringStream << _winampController->getElementEqualizer(element);
 			}
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Checking equalizer.");
 			break;
 		}
 		case 41:
-			stringStream << _winampController.isEqualizerEnabled() ? "1" : "0";
+			stringStream << _winampController->isEqualizerEnabled() ? "1" : "0";
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Checking equalizer status.");
 			break;
 		/*case 42:
-			stringStream << _winampController.isAutoloadEnabled() ? "1" : "0";
+			stringStream << _winampController->isAutoloadEnabled() ? "1" : "0";
 			buffer.append(stringStream.str());*/
 			break;
 		case 43: {
 			int element, value;
 			stringStream << param << " " << param2;
 			stringStream >> element >> value;
-			_winampController.setElementEqualizer(element, value);
+			_winampController->setElementEqualizer(element, value);
 			sendDataMessage(666, "Setting equalizer values.");
 			break;
 		}
 		case 44:
-			_winampController.restartWinamp();
+			_winampController->restartWinamp();
 			sendDataMessage(666, "Restart winamp.");
 			break;
 		case 45:
-			stringStream << _winampController.isShuffleOptionSet() ? "1" :"0";
+			stringStream << _winampController->isShuffleOptionSet() ? "1" :"0";
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Checking shuffle option.");
 			break;
 		case 46:
-			stringStream << _winampController.isRepeatOptionSet() ? "1" :"0";
+			stringStream << _winampController->isRepeatOptionSet() ? "1" :"0";
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Checking repeat option.");
 			break;
@@ -374,7 +383,7 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 			int mode;
 			stringStream << param;
 			stringStream >> mode;
-			_winampController.setShuffleOption(mode);
+			_winampController->setShuffleOption(mode);
 			sendDataMessage(666, "Setting shuffle option.");
 			break;
 		}
@@ -382,156 +391,70 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 			int mode;
 			stringStream << param;
 			stringStream >> mode;
-			_winampController.setRepeatOption(mode);
+			_winampController->setRepeatOption(mode);
 			sendDataMessage(666, "Setting repeat option.");
 			break;
 		}
 		case 49:
-			stringStream << _winampController.getPlayingFilename().c_str();
+			stringStream << _winampController->getPlayingFilename().c_str();
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Getting playingh file.");
 			break;
-		/*case 50: {
-			if (param.empty()) {
-				stringStream << _winampController.getID3Title().c_str();
-				buffer.append(stringStream.str());
-			} else {
-				int track;
-				std::stringstream paramStream;
-				paramStream << param;
-				paramStream >> track;
-				stringStream << _winampController.getID3Title(track);
-				buffer.append(stringStream.str());
-			}
-			sendDataMessage(666, "Getting ID3 Title.");
-			break;
-		}
-		case 51: {
-			if (param.empty()) {
-				stringStream << _winampController.getID3Artist();
-				buffer.append(stringStream.str());
-			} else {
-				int track;
-				std::stringstream paramStream;
-				paramStream << param;
-				paramStream >> track;
-				stringStream << _winampController.getID3Artist(track);
-				buffer.append(stringStream.str());
-			}
-			sendDataMessage(666, "Getting ID3 Artist.");
-			break;
-		}
-		case 52: {
-			if (param.empty()) {
-				stringStream << _winampController.getID3Album();
-				buffer.append(stringStream.str());
-			} else {
-				int track;
-				std::stringstream paramStream;
-				paramStream << param;
-				paramStream >> track;
-				stringStream << _winampController.getID3Album(track);
-				buffer.append(stringStream.str());
-			}
-			sendDataMessage(666, "Getting ID3 Album.");
-			break;
-		}
-		case 53: {
-			if (param.empty()) {
-				stringStream << _winampController.getID3Year();
-				buffer.append(stringStream.str());
-			} else {
-				int track;
-				std::stringstream paramStream;
-				paramStream << param;
-				paramStream >> track;
-				stringStream << _winampController.getID3Year(track);
-				buffer.append(stringStream.str());
-			}
-			sendDataMessage(666, "Getting ID3 Year.");
-			break;
-		}
-		case 54: {
-			if (param.empty()) {
-				stringStream << _winampController.getID3Genre();
-				buffer.append(stringStream.str());
-			} else {
-				int track;
-				std::stringstream paramStream;
-				paramStream << param;
-				paramStream >> track;
-				stringStream << _winampController.getID3Genre(track);
-				buffer.append(stringStream.str());
-			}
-			sendDataMessage(666, "Getting ID3 Genre.");
-			break;
-		}*/
+		
 		case 55: {
 			int track;
 			std::stringstream paramStream;
 			paramStream << param;
 			paramStream >> track;
-			stringStream << _winampController.getPlaylistEntry(track);
+			stringStream << _winampController->getPlaylistEntry(track);
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Getting Playlist entry.");
 			break;
 		}
 		case 56: {
 			std::string message("Adding to playlist: "); message.append(param);
-			_winampController.addToPlaylist(param);
+			_winampController->addToPlaylist(param);
 			sendDataMessage(666, message);
 			break;
 		}
 		case 57: {
 			std::string message("Start to play media: "); message.append(param);
-			_winampController.play(param);
+			_winampController->play(param);
 			sendDataMessage(666, message);
 			break;
 		}
-		/*case 58: {
-			if (param.empty()) {
-				stringStream << _winampController.trackTag() ? "1" : "0";
-				buffer.append(stringStream.str());
-			} else {
-				int track;
-				std::stringstream paramStream;
-				paramStream << param;
-				paramStream >> track;
-				stringStream << _winampController.trackTag(track) ? "1" : "0";
-				buffer.append(stringStream.str());
-			}
-			sendDataMessage(666, "Checking if track has ID3 Tag.");
-			break;
-		}*/
+		
 		case 59:
-			_winampController.openWinamp();
+			_winampController->openWinamp();
 			break;
 		case 60:
 			if (param.empty()) {
-				stringStream << _winampController.getPlayingTitle();
+				stringStream << _winampController->getPlayingTitle();
 			} else {
 				int track;
 				std::stringstream paramStream;
 				paramStream << param;
 				paramStream >> track;
-				stringStream << _winampController.getPlayingTitle(track);
+				stringStream << _winampController->getPlayingTitle(track);
 			}
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Getting current playing title.");
 			break;
-		/*case 61:
-			if (param.empty()) {
-				stringStream << _winampController.getPlayingTitleW();
+		case 61:
+			std::cout << "param:" << param << " - param2_" << param2;
+			if (param2.empty()) {
+				stringStream << _winampController->getMetadata(param);
 			} else {
 				int track;
 				std::stringstream paramStream;
-				paramStream << param;
+				paramStream << param2;
 				paramStream >> track;
-				stringStream << _winampController.getPlayingTitleW(track);
+				stringStream << _winampController->getMetadata(param, track);
 			}
+			
 			buffer.append(stringStream.str());
-			sendDataMessage(666, "Getting current playing titleW.");
-			break;*/
+			sendDataMessage(666, "Getting metadata.");
+			break;
 		default:
 			break;
 	}

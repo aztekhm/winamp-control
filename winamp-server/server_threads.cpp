@@ -11,11 +11,11 @@ SOCKADDR_IN SERVER_ADDRESS;
 HWND LISTENER_WINDOW;
 int PORT;
 bool CLIENT_CONNECTED = false;
+WinampServer* winampServer;
 
-DWORD WINAPI waitForCommandsThread(LPVOID pServer) {
+DWORD WINAPI waitForCommandsThread(LPVOID param) {
 
 	for (;;) {
-		WinampServer *server = (WinampServer*)pServer;
 		
 		if (WSAStartup(MAKEWORD(2,2), &WSA_DATA) != 0) {
 			sendDataMessage(SERVER_MSG, "Winsock initialization failed");
@@ -56,7 +56,7 @@ DWORD WINAPI waitForCommandsThread(LPVOID pServer) {
 		
 		CLIENT_CONNECTED = true;
 		sendDataMessage(SERVER_MSG, "Client connected");
-		if (server->getSynchronizedMode()) {
+		if (winampServer->getSynchronizedMode()) {
 			if (CreateThread(NULL, 0, synchronizePlayerThread, NULL, 0, NULL) == NULL) {
 				sendDataMessage(SERVER_MSG, "Cannot start synchronization");
 			}
@@ -93,7 +93,7 @@ DWORD WINAPI executeCommandThread(LPVOID pRequest) {
 	char *cRequest = (char*)pRequest;
 	int sentBytes = 0, error = 0;
 	
-	std::string response = WinampServer::parseRequest(cRequest);
+	std::string response = winampServer->parseRequest(cRequest);
 	if (!response.empty()) {
 		//sentBytes = send(CLIENT_SOCKET, response.c_str(), response.size() + 1, 0);	//por el fin de cadena "\0"
 		sendData(response);
