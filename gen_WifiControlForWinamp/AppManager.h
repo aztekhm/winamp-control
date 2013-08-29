@@ -14,6 +14,7 @@ namespace gen_WifiControlForWinamp
 		AppManager(void);
 
 	public:
+		static void configure(WinampServer* winampServer);
 		static void runApp();
 		static void closeApp();
 		static void showApp();

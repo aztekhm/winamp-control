@@ -16,6 +16,14 @@ winampGeneralPurposePlugin plugin = {
 };
 
 int init() {
+	WinampController* winampController = new WinampController();
+	winampController->setWinampWindow(plugin.hwndParent);
+
+	WinampServer* winampServer = new WinampServer();
+	//winampServer->setSynchronizedMode(false);
+	winampServer->setWinampController(winampController);
+
+	gen_WifiControlForWinamp::AppManager::configure(winampServer);
 	gen_WifiControlForWinamp::AppManager::runApp();
 	return 0;
 }

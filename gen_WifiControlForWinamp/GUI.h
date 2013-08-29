@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include "WinampServer.h"
+#include "WinampController.h"
 #include "SettingsManager.h"
 
 using namespace System;

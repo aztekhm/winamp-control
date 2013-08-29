@@ -11,9 +11,12 @@ AppManager::AppManager(void)
 {
 }
 
+void AppManager::configure(WinampServer* winampServer) {
+	_winampServer = winampServer;
+}
+
 void AppManager::runApp()
 {
-	_winampServer = new WinampServer();
 	_settingsManager = gcnew SettingsManager();
 	_settingsManager->readConfigurationFile();
 	
