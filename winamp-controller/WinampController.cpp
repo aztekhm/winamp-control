@@ -359,3 +359,20 @@ int WinampController::getExtendedFileInfo(std::string file, std::string metadata
 	return (int)SendMessage(_winampWindow, WM_WA_IPC, (WPARAM) & efis, IPC_GET_EXTENDED_FILE_INFO); //will return 1 if wa2 supports this IPC call
 	
 }
+
+std::string WinampController::getMetadata(std::string what) {
+	return getMetadata(what, getCurrentTrackInPlaylist());
+}
+
+std::string WinampController::getMetadata(std::string what, int track) {
+	std::string metadata;
+	if (track < 0 || track >= getTracksInPlaylist())
+		return metadata;
+		
+	std::string file = getPlaylistEntry(track);
+	char buffer[512];
+	getExtendedFileInfo(file, what, buffer, 512);
+	metadata.append(buffer);
+	return metadata;
+}
+

@@ -90,8 +90,11 @@ class WinampController {
 		void openWinamp();	//59
 		std::string getPlayingTitle();	//60
 		std::string getPlayingTitle(int track);
+		
 		// metadata=[title,artist,albumartist,album,genre,year,disc,publisher,comment,track,composer,conductor]
 		int getExtendedFileInfo(std::string file, std::string metadata, char* dest, int len); //61
+		std::string getMetadata(std::string what);
+		std::string getMetadata(std::string what, int track);
 		
 };
 #endif

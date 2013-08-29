@@ -17,6 +17,13 @@ System::Void GUI::btnExecute_Click(System::Object^  sender, System::EventArgs^  
 		int result = _winampController->getExtendedFileInfo(param1.c_str(), param2.c_str(), artistName, 256);
 		this->txtResult->Text = gcnew String(artistName);
 
+	} else if (command->Equals("extended2")) {
+		std::string metadata;
+		if (param2.empty())
+			metadata.append(_winampController->getMetadata(param1));
+		else
+			metadata.append(_winampController->getMetadata(param1, atoi(param2.c_str())));
+		this->txtResult->Text = gcnew String(metadata.c_str());
 	} else if (command->Equals("play")) {
 		_winampController->addToPlaylist(param1);
 	}
