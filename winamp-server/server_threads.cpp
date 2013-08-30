@@ -130,10 +130,8 @@ DWORD WINAPI synchronizePlayerThread(LPVOID none) {
 			<< winampController.getCurrentAudioInfo(AUDIO_SAMPLERATE) << "|"	//14
 			<< winampController.getCurrentAudioInfo(AUDIO_BITRATE) << "|"		//15
 			<< winampController.getCurrentAudioInfo(AUDIO_CHANNELS) << "|"		//16
-			// << (winampController.trackTag() ? winampController.getID3Artist() : "") << "|"	//17
-			// << (winampController.trackTag() ? winampController.getID3Title() : winampController.getPlayingTitle()) << "|"	//18
-			<< winampController.getPlayingTitle() << "|"	//17
-			<< winampController.getPlayingTitle() << "|"	//18
+			<< winampController.getMetadata("artist") << "|"	//17
+			<< winampController.getMetadata("title") << "|"	//18
 			<< (winampController.isRepeatOptionSet() ? "1" : "0") << "|"	//19
 			<< (winampController.isShuffleOptionSet() ? "1" : "0");			//20
 		
@@ -155,14 +153,7 @@ DWORD WINAPI synchronizePlayerThread(LPVOID none) {
 		std::stringstream playlistStream;
 		playlistStream << "syncplaylist_" << winampController.getCurrentTrackInPlaylist();
 		for (int i=0; i<tracks; i++) {
-			/*
-			if (winampController.trackTag()) {
-				playlistStream << "||" << winampController.getID3Artist(i) << "|" << winampController.getID3Title(i);
-			} else {
-				playlistStream << "|| |" << winampController.getPlayingTitle(i);
-			}
-			*/
-			playlistStream << "|| |" << winampController.getPlayingTitle(i);
+			playlistStream << "||" << winampController.getMetadata("artist", i) << "|" << winampController.getMetadata("title", i);
 		}
 		sendData(playlistStream.str());
 		
