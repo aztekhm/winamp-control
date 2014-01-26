@@ -43,6 +43,7 @@ void AppManager::runApp()
 
 	_winampServer->setListenerWindow(_gui->getHandledWindow());
 	_winampServer->setPort(_settingsManager->getPort());
+	_winampServer->setSynchronizedMode(false);
 	_winampServer->start();	
 }
 

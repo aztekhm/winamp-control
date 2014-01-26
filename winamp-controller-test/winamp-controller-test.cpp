@@ -75,7 +75,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf ("4. getPlaylistEntry\n");
 	printf ("5. addToPlaylist\n");
 	printf ("6. playMedia\n");
-	printf ("7. trackTag\n");
+	printf ("7. metadata\n");
 	printf ("8. openWinamp\n");
 	printf ("0. Exit\n");
 	for (;;) {
@@ -357,15 +357,14 @@ int _tmain(int argc, _TCHAR* argv[])
 				winampController->play(media);
 				break;
 			}
-			/*case '7': {
+			case '7': {
 				int track;
-				cout << "wich track (-1 = current)"; cin >> track;
-				if (track == -1)
-					cout << "trackTag ? " << (winampController->trackTag() ? "simon" : "nariz de perro") << endl;
-				else
-					cout << "trackTag of " << track << " ? " << (winampController->trackTag(track) ? "simon" : "nariz de perro") << endl;
+				cout << "which track (-1 = current track)?"; cin >> track;
+				cout << "\nartist:" << (track == -1 ? winampController->getMetadata("artist") : winampController->getMetadata("artist", track));
+				cout << "\ntitle:" << (track == -1 ? winampController->getMetadata("title") : winampController->getMetadata("title", track));
+				cout << "\nalbum:" << (track == -1 ? winampController->getMetadata("album") : winampController->getMetadata("album", track));
 				break;
-			}*/
+			}
 			case '8':
 				winampController->openWinamp();
 				break;

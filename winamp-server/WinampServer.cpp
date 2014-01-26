@@ -455,13 +455,47 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 			buffer.append(stringStream.str());
 			sendDataMessage(666, "Getting metadata.");
 			break;
+
+		case 100: {
+			std::stringstream nowPlaying;
+			nowPlaying << "syncmaineq_"
+				<< _winampController->getCurrentTrackInfo(TRACK_LENGTH) << "|"		//0
+				<< _winampController->getCurrentTrackInfo(PLAYBACK_POSITION) << "|"	//1
+				<< _winampController->getVolume() << "|"							//2
+				<< _winampController->getElementEqualizer(0) << "|"		//3
+				<< _winampController->getElementEqualizer(1) << "|"		//4
+				<< _winampController->getElementEqualizer(2) << "|"		//5
+				<< _winampController->getElementEqualizer(3) << "|"		//6
+				<< _winampController->getElementEqualizer(4) << "|"		//7
+				<< _winampController->getElementEqualizer(5) << "|"		//8
+				<< _winampController->getElementEqualizer(6) << "|"		//9
+				<< _winampController->getElementEqualizer(7) << "|"		//10
+				<< _winampController->getElementEqualizer(8) << "|"		//11
+				<< _winampController->getElementEqualizer(9) << "|"		//12
+				<< _winampController->getElementEqualizer(10) << "|"	//13
+				<< _winampController->getCurrentAudioInfo(AUDIO_SAMPLERATE) << "|"	//14
+				<< _winampController->getCurrentAudioInfo(AUDIO_BITRATE) << "|"		//15
+				<< _winampController->getCurrentAudioInfo(AUDIO_CHANNELS) << "|"	//16
+				<< _winampController->getMetadata("artist") << "|"	//17
+				<< _winampController->getMetadata("title") << "|"	//18
+				<< (_winampController->isRepeatOptionSet() ? "1" : "0") << "|"	//19
+				<< (_winampController->isShuffleOptionSet() ? "1" : "0");		//20
+			buffer.append(nowPlaying.str());
+			break;
+		}
+		case 101: {
+			std::stringstream nowPlaying;
+			int tracks = _winampController->getTracksInPlaylist();
+			nowPlaying << "syncplaylist_" << _winampController->getCurrentTrackInPlaylist();
+			for (int i=0; i<tracks; i++) {
+				nowPlaying << "||" << _winampController->getMetadata("artist", i) << "|" << _winampController->getMetadata("title", i);
+			}
+			buffer.append(nowPlaying.str());
+			break;
+		}
 		default:
 			break;
 	}
-	/*if (buffer.size() == 0) {
-		std::stringstream commandStream;
-		commandStream << command;
-		buffer.append(commandStream.str());
-	}*/
+	
 	return buffer;
 }

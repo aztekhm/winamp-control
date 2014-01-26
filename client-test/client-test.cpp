@@ -56,8 +56,8 @@ int main(int argc, char *argv[])
 				break;
 			}
 
-			char buffer2[MAX_PATH], line[MAX_PATH];
-			int bytes = recv(sock, buffer2, MAX_PATH, 0);
+			char buffer2[2048], line[2048];
+			int bytes = recv(sock, buffer2, 2048, 0);
 			readLine(buffer2, line);
 			
 			error = WSAGetLastError();
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 	return EXIT_SUCCESS;
 }
 void readLine(char *pBuffer, char *pLine) {
-	for (int i=0; i<MAX_PATH; i++) {
+	for (int i=0; i<2048; i++) {
 		if (pBuffer[i] == '\n') {
 			pLine[i] = '\0';
 			break;
