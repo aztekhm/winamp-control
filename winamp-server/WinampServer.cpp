@@ -484,10 +484,18 @@ std::string WinampServer::executeCommand(int command, std::string param, std::st
 			break;
 		}
 		case 101: {
+			int offset = 0;
+			if (!param.empty()) {
+				std::stringstream paramStream;
+				paramStream << param;
+				paramStream >> offset;
+			}
 			std::stringstream nowPlaying;
 			int tracks = _winampController->getTracksInPlaylist();
 			nowPlaying << "syncplaylist_" << _winampController->getCurrentTrackInPlaylist();
-			for (int i=0; i<tracks; i++) {
+
+			int trackLimit = (offset+20)<tracks ? (offset+20) : tracks;
+			for (int i=offset; i<trackLimit; i++) {
 				nowPlaying << "||" << _winampController->getMetadata("artist", i) << "|" << _winampController->getMetadata("title", i);
 			}
 			buffer.append(nowPlaying.str());
