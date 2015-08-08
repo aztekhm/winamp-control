@@ -74,10 +74,7 @@ DWORD WINAPI waitForCommandsThread(LPVOID param) {
 				shutdown(CLIENT_SOCKET, 0);
 				break;
 			} else {
-				HANDLE _requestThread;
-				if ((_requestThread = CreateThread(NULL, 0, executeCommandThread, buffer, 0, NULL)) == NULL) {
-					sendDataMessage(SERVER_MSG, "Cannot process request");
-				}
+				executeCommand(buffer);
 			}
 		}
 		if (SERVER_SOCKET)
@@ -89,11 +86,10 @@ DWORD WINAPI waitForCommandsThread(LPVOID param) {
 	}
 }
 
-DWORD WINAPI executeCommandThread(LPVOID pRequest) {
-	char *cRequest = (char*)pRequest;
+void executeCommand(char *request){
 	int sentBytes = 0, error = 0;
 	
-	std::string response = winampServer->parseRequest(cRequest);
+	std::string response = winampServer->parseRequest(request);
 	if (!response.empty()) {
 		//sentBytes = send(CLIENT_SOCKET, response.c_str(), response.size() + 1, 0);	//por el fin de cadena "\0"
 		sendData(response);
@@ -105,7 +101,6 @@ DWORD WINAPI executeCommandThread(LPVOID pRequest) {
 			closesocket(CLIENT_SOCKET);
 		}
 	}
-	return 0;
 }
 
 DWORD WINAPI synchronizePlayerThread(LPVOID none) {

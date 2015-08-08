@@ -8,7 +8,7 @@
 #define SERVER_MSG 777
 
 DWORD WINAPI waitForCommandsThread(LPVOID pServer);
-DWORD WINAPI executeCommandThread(LPVOID pRequest);
+void executeCommand(char *request);
 DWORD WINAPI synchronizePlayerThread(LPVOID none);
 
 void sendDataMessage(int code, std::string message);
